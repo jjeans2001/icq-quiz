@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICQ Chemistry Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --card2: #1c2230;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --green: #3fb950;
+  --green-glow: rgba(63,185,80,0.15);
+  --blue: #58a6ff;
+  --blue-glow: rgba(88,166,255,0.15);
+  --gold: #d29922;
+  --gold-glow: rgba(210,153,34,0.15);
+  --teal: #39d0c3;
+  --teal-glow: rgba(57,208,195,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── animated background ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(63,185,80,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(88,166,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 60% 10%, rgba(57,208,195,0.05) 0%, transparent 50%);
+  animation: bgPulse 8s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes bgPulse{
+  0%{opacity:.6}100%{opacity:1}
+}
+
+/* ── floating atoms bg ── */
+.atoms{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.atom{position:absolute;border-radius:50%;border:1px solid;animation:float linear infinite;opacity:0}
+@keyframes float{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:.4}
+  90%{opacity:.2}
+  100%{transform:translateY(-100px) rotate(360deg);opacity:0}
+}
+
+/* ── main layout ── */
+.wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+
+/* ── header ── */
+.header{text-align:center;margin-bottom:56px;animation:fadeDown .8s ease both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+
+.logo-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:24px}
+.atom-icon{width:52px;height:52px;position:relative}
+.atom-icon svg{width:100%;height:100%}
+.logo-badge{
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;
+  background:var(--blue);color:#0d1117;
+  padding:4px 10px;border-radius:4px;
+}
+.site-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(36px,6vw,64px);
+  line-height:1.1;
+  background:linear-gradient(135deg,var(--text) 0%,var(--teal) 50%,var(--blue) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.site-sub{
+  font-size:15px;color:var(--muted);letter-spacing:.02em;
+  max-width:440px;margin:0 auto;line-height:1.6;
+}
+.site-sub b{color:var(--text)}
+
+/* ── cards grid ── */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+  width:100%;max-width:960px;
+  margin-bottom:40px;
+}
+
+.card{
+  position:relative;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px;
+  text-decoration:none;
+  color:var(--text);
+  transition:transform .25s ease,border-color .25s,box-shadow .25s;
+  overflow:hidden;
+  animation:fadeUp .7s ease both;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:16px;
+  background:var(--card-glow,transparent);
+  opacity:0;transition:opacity .3s;
+  pointer-events:none;
+}
+.card:hover{transform:translateY(-4px);border-color:var(--card-accent,var(--border))}
+.card:hover::before{opacity:1}
+.card:hover .card-arrow{transform:translateX(4px)}
+
+.card-1{--card-glow:var(--green-glow);--card-accent:var(--green)}
+.card-2{--card-glow:var(--blue-glow);--card-accent:var(--blue)}
+.card-3{--card-glow:var(--gold-glow);--card-accent:var(--gold)}
+.card-4{--card-glow:var(--teal-glow);--card-accent:var(--teal)}
+
+.card:nth-child(1){animation-delay:.05s}
+.card:nth-child(2){animation-delay:.1s}
+.card:nth-child(3){animation-delay:.15s}
+.card:nth-child(4){animation-delay:.2s}
+.card:nth-child(5){animation-delay:.25s}
+.card:nth-child(6){animation-delay:.3s}
+.card:nth-child(7){animation-delay:.35s}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.card-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:20px;
+  border:1px solid var(--card-accent,var(--border));
+}
+.card-1 .card-icon{background:var(--green-glow);border-color:var(--green)}
+.card-2 .card-icon{background:var(--blue-glow);border-color:var(--blue)}
+.card-3 .card-icon{background:var(--gold-glow);border-color:var(--gold)}
+.card-4 .card-icon{background:var(--teal-glow);border-color:var(--teal)}
+
+.card-year{
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--card-accent,var(--muted));
+  margin-bottom:8px;display:block;
+}
+.card-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:8px;line-height:1.2}
+.card-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px}
+
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.tag{
+  font-size:11px;font-family:'DM Mono',monospace;
+  padding:3px 8px;border-radius:6px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  color:var(--muted);
+}
+
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-count{
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;
+  color:var(--card-accent,var(--muted));
+}
+.card-arrow{
+  width:32px;height:32px;border-radius:8px;
+  border:1px solid var(--card-accent,var(--border));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--card-accent,var(--muted));
+  transition:transform .2s;font-size:16px;
+}
+
+/* ── footer ── */
+.footer{
+  text-align:center;font-size:12px;color:var(--muted);
+  animation:fadeUp .7s .5s ease both;
+}
+.footer a{color:var(--blue);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+
+/* ── periodic table decoration ── */
+.elements-row{
+  display:flex;gap:8px;justify-content:center;margin-bottom:32px;
+  animation:fadeUp .7s .05s ease both;
+}
+.el{
+  width:44px;height:48px;border:1px solid var(--border);border-radius:6px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--card2);gap:2px;
+}
+.el .num{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted)}
+.el .sym{font-size:16px;font-weight:700;font-family:'DM Serif Display',serif;line-height:1}
+.el .name{font-size:7px;color:var(--muted);letter-spacing:.05em}
+.el-n{border-color:rgba(88,166,255,.4);color:var(--blue)}
+.el-h{border-color:rgba(230,237,243,.4);color:var(--text)}
+.el-o{border-color:rgba(88,166,255,.4);color:var(--blue)}
+.el-cl{border-color:rgba(57,208,195,.4);color:var(--teal)}
+</style>
+</head>
+<body>
+
+<!-- floating atoms -->
+<div class="atoms" id="atoms"></div>
+
+<div class="wrap">
+
+  <!-- header -->
+  <div class="header">
+    <div class="logo-row">
+      <svg class="atom-icon" viewBox="0 0 52 52" fill="none">
+        <ellipse cx="26" cy="26" rx="24" ry="10" stroke="#58a6ff" stroke-width="1.2" fill="none" transform="rotate(-30 26 26)"/>
+        <ellipse cx="26" cy="26" rx="24" ry="10" stroke="#39d0c3" stroke-width="1.2" fill="none" transform="rotate(30 26 26)"/>
+        <ellipse cx="26" cy="26" rx="24" ry="10" stroke="#3fb950" stroke-width="1.2" fill="none"/>
+        <circle cx="26" cy="26" r="4" fill="#e6edf3"/>
+      </svg>
+      <div class="logo-badge">ICQ</div>
+    </div>
+
+    <div class="elements-row">
+      <div class="el el-h"><div class="num">1</div><div class="sym el-h">H</div><div class="name">1.01</div></div>
+      <div class="el el-n"><div class="num">7</div><div class="sym el-n">N</div><div class="name">14.01</div></div>
+      <div class="el el-o"><div class="num">8</div><div class="sym el-o">O</div><div class="name">16.00</div></div>
+      <div class="el el-cl"><div class="num">17</div><div class="sym el-cl">Cl</div><div class="name">35.45</div></div>
+    </div>
+
+    <h1 class="site-title">Chemistry Quiz</h1>
+    <p class="site-sub">ข้อสอบเคมี ICQ ระดับ Intermediate (Y9/Y10)<br><b>เลือกชุดข้อสอบปีที่ต้องการฝึกซ้อม</b></p>
+  </div>
+
+  <!-- cards -->
+  <div class="cards">
+
+    <a class="card card-2" href="ICQ_2015_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2015<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2015 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card card-1" href="ICQ_2016_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2016<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2016 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card card-3" href="ICQ_2017_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2017<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2017 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card card-4" href="ICQ_2021_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2021<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2021 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card card-2" href="ICQ_2022_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2022<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2022 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card card-1" href="ICQ_2023_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2023<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2023 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card card-3" href="ICQ_2024_Intermediate_Y9Y10_Completed.html">
+      <div class="card-icon">📋</div>
+      <span class="card-year">Past Paper</span>
+      <h2 class="card-title">2024<br>Intermediate</h2>
+      <p class="card-desc">ข้อสอบ ICQ ปี 2024 ระดับ Intermediate (Y9/Y10) พร้อมเฉลยทีละขั้นตอน</p>
+      <div class="card-tags">
+        <span class="tag">Y9/Y10</span>
+        <span class="tag">Completed</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-count">Full Exam</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    <p>jjeans2001.github.io/icq-quiz &nbsp;·&nbsp; For educational use only</p>
+  </div>
+
+</div>
+
+<script>
+// floating atoms
+const atoms = document.getElementById('atoms');
+const colors = ['#3fb950','#58a6ff','#39d0c3','#d29922'];
+for(let i=0;i<18;i++){
+  const el = document.createElement('div');
+  el.className = 'atom';
+  const size = 4 + Math.random()*12;
+  const color = colors[Math.floor(Math.random()*colors.length)];
+  el.style.cssText = `
+    width:${size}px;height:${size}px;
+    left:${Math.random()*100}%;
+    border-color:${color};
+    animation-duration:${8+Math.random()*12}s;
+    animation-delay:${Math.random()*10}s;
+  `;
+  atoms.appendChild(el);
+}
+</script>
+</body>
+</html>
